@@ -98,6 +98,7 @@
   <ItemGroup>
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="third_party\pugixml-1.11\src\pugixml.cpp" />
     <ClCompile Include="src\xml_parser.cpp" />
   </ItemGroup>
   <ItemGroup>
