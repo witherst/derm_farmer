@@ -12,6 +12,7 @@ int main() {
 		//fd::Game game;
 		//game.Run();
 		fd::XmlParser map_xml("assets/art/tiled/map/farm_map.tmx");
+		map_xml.PrintStatistics("ground");
 		
 	}
 	catch (std::exception& e) {
