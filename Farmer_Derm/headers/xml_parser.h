@@ -15,27 +15,44 @@ namespace fd {
 			LoadMap(filename);
 		}
 
+		enum class LayerType {
+			kTiles,
+			kCollider,
+		};
+
 		struct layer_info {
 			std::string name = "";
 			int id = 0;
-			int layer_width = 0;
-			int layer_height = 0;
+			float width = 0.;
+			float height = 0.;
+			float pos_x = -1.;
+			float pos_y = -1.;
+			
 			std::vector<std::vector<std::string>> tile_map;
 		};
 
-		const int GetMapWidth()						{ return map_width; }
-		const int GetMapHeight()					{ return map_height; }
-		const int GetTileWidth()					{ return tile_width; }
-		const int GetTileHeight()					{ return tile_height; }
-		const int GetFirstGid()						{ return firstgid; }
-		const std::string GetTileSource()		{ return tile_source; }
-		const std::vector<layer_info> GetLayers()	{ return layers; }
+		struct object_group_info {
+			std::string object_group_name = "";
+			int object_group_id = 0;
+			std::vector<layer_info> object_info;
+		};
+
+		const int GetMapWidth()								{ return map_width; }
+		const int GetMapHeight()							{ return map_height; }
+		const int GetTileWidth()							{ return tile_width; }
+		const int GetTileHeight()							{ return tile_height; }
+		const int GetFirstGid()								{ return firstgid; }
+		const std::string GetTileSource()					{ return tile_source; }
+		const std::vector<layer_info> GetLayers()			{ return layers; }
+		const std::vector<object_group_info> GetObjects()	{ return objects; }
 		void LoadMap(const char* filename);	
-		void PrintStatistics(std::string print_name = "");
+		void PrintLayerStatistics(std::string print_name = "");
+		void PrintObjectStatistics(std::string print_name = "");
 
 	private:
+		void PopulateLayers();
 		void PopulateMapAttrs();
-		void PopulateLayers();	
+		void PopulateObjects();	
 
 		int firstgid = 0;
 		int map_width = 0;
@@ -44,6 +61,7 @@ namespace fd {
 		int tile_height = 0;
 		std::string tile_source = "";
 		std::vector<layer_info> layers;
+		std::vector<object_group_info> objects;
 
 		pugi::xml_document doc;
 		pugi::xml_parse_result result;	

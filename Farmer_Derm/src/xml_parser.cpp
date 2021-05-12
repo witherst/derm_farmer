@@ -11,6 +11,7 @@ namespace fd {
 
 		PopulateMapAttrs();
 		PopulateLayers();
+		PopulateObjects();
 	}
 	void XmlParser::PopulateMapAttrs() {
 		map_width = doc.child("map").attribute("width").as_int();
@@ -34,8 +35,8 @@ namespace fd {
 			layer_info cur_layer;
 			cur_layer.name = tool.attribute("name").as_string();
 			cur_layer.id = tool.attribute("id").as_int();
-			cur_layer.layer_height = tool.attribute("height").as_int();
-			cur_layer.layer_width = tool.attribute("width").as_int();
+			cur_layer.height = tool.attribute("height").as_float();
+			cur_layer.width = tool.attribute("width").as_float();
 
 			std::string data = tool.child("data").child_value();
 			std::string characters = "";	
@@ -56,7 +57,29 @@ namespace fd {
 			layers.push_back(cur_layer);
 		}
 	}
-	void XmlParser::PrintStatistics(std::string print_name) {
+
+	void XmlParser::PopulateObjects() {
+		for (pugi::xml_node tool = doc.child("map").child("objectgroup"); tool; tool = tool.next_sibling("objectgroup")) {
+			object_group_info cur_obj_group;
+			cur_obj_group.object_group_name = tool.attribute("name").as_string();
+			cur_obj_group.object_group_id = tool.attribute("id").as_int();
+
+			for (pugi::xml_node obj_tool = tool.child("object"); obj_tool; obj_tool = obj_tool.next_sibling("object")) {	
+				layer_info object_info;
+				object_info.name = obj_tool.attribute("name").as_string();
+				object_info.id = obj_tool.attribute("id").as_int();
+				object_info.height = obj_tool.attribute("height").as_float();
+				object_info.width = obj_tool.attribute("width").as_float();
+				object_info.pos_x = obj_tool.attribute("x").as_float();
+				object_info.pos_y = obj_tool.attribute("y").as_float();
+				cur_obj_group.object_info.push_back(object_info);
+			}
+			
+			objects.push_back(cur_obj_group);
+		}
+	}
+
+	void XmlParser::PrintLayerStatistics(std::string print_name) {
 		std::cout << "\n************Map Stats************\n";
 		std::cout << "Map width:\t" << map_width << " tiles\tMap height:\t" << map_height << " tiles\n";
 		std::cout << "Tile width:\t" << tile_width << "px\t\tTile height:\t" << tile_height << "px\n";
@@ -65,13 +88,13 @@ namespace fd {
 		std::cout << "\n*****LAYERS:\n";
 		for (auto& layer : layers) {
 			std::cout << "Layer:\t" << layer.name << "\tID: " << layer.id << 
-				"\tWidth:\t" << layer.layer_width << " tiles\t" << "Height:\t" <<
-				layer.layer_height << " tiles\n";
+				"\tWidth:\t" << layer.width << " tiles\t" << "Height:\t" <<
+				layer.height << " tiles\n";
 			
 			if (print_name == "" || layer.name == print_name) {
 				for (int i = 0; i < layer.tile_map.size(); i++) {
 					for (int j = 0; j < layer.tile_map[i].size(); j++) {
-						if (j % layer.layer_width == 0) {
+						if (j % (int)layer.width == 0) {
 							std::cout << '\n';
 						}
 						std::cout << layer.tile_map[i][j] << " ";
@@ -81,4 +104,21 @@ namespace fd {
 			}	
 		}	
 	}
+	
+	void XmlParser::PrintObjectStatistics(std::string print_name) {
+		std::cout << "\n*****OBJECTS*****\n";
+		for (auto& object_grp : objects) {
+			if (print_name == "" || object_grp.object_group_name == print_name) {
+				std::cout << "Group Name: " << object_grp.object_group_name << " -- ID: " << object_grp.object_group_id << "\n";
+
+				for (auto& object : object_grp.object_info) {
+					std::cout << "\tName:\t" << object.name << "\tID: " << object.id << "\n";
+					std::cout << "\tWidth:\t" << object.width << " pixels\tHeight:\t" << object.height << " pixels\n";
+					std::cout << "\tPos: \t(" << object.pos_x << ", " << object.pos_y << ")\n";	
+					std::cout << "\n";
+				}	
+			}
+		}	
+	}
+
 }; // namespace fd
