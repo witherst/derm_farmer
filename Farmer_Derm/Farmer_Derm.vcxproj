@@ -94,12 +94,14 @@
     <ClInclude Include="headers\resource_identifiers.h" />
     <ClInclude Include="headers\texture_holder.h" />
     <ClInclude Include="headers\xml_parser.h" />
+    <ClInclude Include="headers\tile_map.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="third_party\pugixml-1.11\src\pugixml.cpp" />
     <ClCompile Include="src\xml_parser.cpp" />
+    <ClCompile Include="src\tile_map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="headers\resource_holder.inl" />

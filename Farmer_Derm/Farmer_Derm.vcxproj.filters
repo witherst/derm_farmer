@@ -30,6 +30,9 @@
     <ClInclude Include="headers\xml_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\tile_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\game.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\xml_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tile_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,6 +4,7 @@
 #include "headers/resource_holder.h"
 #include "headers/resource_identifiers.h"
 #include "headers/texture_holder.h"
+#include "headers/tile_map.h"
 
 namespace fd {
 
@@ -20,6 +21,9 @@ namespace fd {
 		sf::Clock clock;
 		sf::Time time_since_last_update = sf::Time::Zero;
 
+		TileMap tmap; 
+		tmap.Load("assets/art/tiled/map/farm_map.tmx");
+
 		ResourceHolder<sf::Texture, textures::ID> textures;
 		textures.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
 
@@ -35,6 +39,7 @@ namespace fd {
 				ProcessEvents();
 				Update(time_per_frame);
 				Render();
+				render_window_.draw(tmap);
 			}
 		}
 	}
@@ -81,7 +86,7 @@ namespace fd {
 	}
 
 	void Game::Render() {
-		render_window_.clear();
+		//render_window_.clear();
 		render_window_.draw(player_);
 		render_window_.display();
 	}

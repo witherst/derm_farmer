@@ -9,6 +9,7 @@
 namespace fd {
 	class XmlParser {
 	public:	
+		XmlParser() {};
 		XmlParser(const char* filename)
 			//: result(doc.load_file(file_name))
 		{
