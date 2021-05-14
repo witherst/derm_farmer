@@ -3,12 +3,16 @@
 
 namespace fd {
 
-	bool TileMap::Load(const char* filename) {
+	bool TileMap::Load(const char* texture_filename, const char* map_filename) {
+		// Load map texture file.
+		if (!tileset_.loadFromFile(texture_filename)) {
+			return false;
+		}
 		// Load map with our map parser.
-		map_parser_.LoadMap(filename);
+		map_parser_.LoadMap(map_filename);
 
-		auto map_height = map_parser_.GetMapWidth();
-		auto map_width = map_parser_.GetMapHeight();
+		const int map_height = map_parser_.GetMapWidth();
+		const int map_width = map_parser_.GetMapHeight();
 
 		// Set primitive type and resize vertex array to fit our level size.
 		vertices_.setPrimitiveType(sf::Quads);
@@ -16,17 +20,15 @@ namespace fd {
 		vertices_.resize(map_height * map_width * 4);
 
 		// Populate vertex array, with one quad per tile.
-		for (unsigned int i = 1; i < map_width; i++) {
-			for (unsigned int j = 1; j < map_height; j++) {
+		for (unsigned int i = 0; i < map_width; i++) {
+			for (unsigned int j = 0; j < map_height; j++) {
 				// Get the tile number in our map that we will be mapping to.
-
-				int cur_tile_number = stoi(map_parser_.GetLayers()[0].tile_map[i][j]);
-
+				std::cout << map_parser_.GetLayers()[1].tile_map[i][j] << " ";
+				int cur_tile_number = stoi(map_parser_.GetLayers()[1].tile_map[i][j]);
 
 				// Find the tile in the tilset texture map.	
-				// TODO: Need to store the tileset texture size  width/height.
-				int tu = cur_tile_number % ((4 * 64) / map_parser_.GetTileWidth());
-				int tv = cur_tile_number / ((4 * 64) / map_parser_.GetTileWidth());
+				int tu = cur_tile_number % (tileset_.getSize().x / map_parser_.GetTileWidth());
+				int tv = cur_tile_number / (tileset_.getSize().y / map_parser_.GetTileWidth());
 
 				// Get pointer ot current tile's quad.
 				sf::Vertex* quad = &vertices_[(i + j * map_width) * 4];
@@ -42,8 +44,8 @@ namespace fd {
 				quad[1].texCoords = sf::Vector2f((tu + 1) * map_parser_.GetTileWidth(), tv * map_parser_.GetTileHeight());
 				quad[2].texCoords = sf::Vector2f((tu + 1) * map_parser_.GetTileWidth(), (tv + 1) * map_parser_.GetTileHeight());
 				quad[3].texCoords = sf::Vector2f(tu * map_parser_.GetTileWidth(), (tv + 1) * map_parser_.GetTileHeight());
-
 			}
+			std::cout << '\n';
 		}
 
 		return true;

@@ -10,10 +10,10 @@ namespace fd {
 
 	Game::Game()
 		: render_window_(sf::VideoMode(640, 480), "Derm Farmer"),
-		player_(),
-		view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f))
+		player_()
+		//view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f))
 	{
-		render_window_.setView(view_);
+		//render_window_.setView(view_);
 	}
 
 	void Game::Run()
@@ -22,7 +22,7 @@ namespace fd {
 		sf::Time time_since_last_update = sf::Time::Zero;
 
 		TileMap tmap; 
-		tmap.Load("assets/art/tiled/map/farm_map.tmx");
+		tmap.Load("assets/art/aseprite/landscape/landscape_sheet.png", "assets/art/tiled/map/farm_map.tmx");
 
 		ResourceHolder<sf::Texture, textures::ID> textures;
 		textures.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
@@ -38,8 +38,9 @@ namespace fd {
 				time_since_last_update -= time_per_frame;
 				ProcessEvents();
 				Update(time_per_frame);
-				Render();
+				//Render();
 				render_window_.draw(tmap);
+				render_window_.display();
 			}
 		}
 	}
@@ -86,7 +87,7 @@ namespace fd {
 	}
 
 	void Game::Render() {
-		//render_window_.clear();
+		render_window_.clear();
 		render_window_.draw(player_);
 		render_window_.display();
 	}

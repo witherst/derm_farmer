@@ -8,7 +8,7 @@ namespace fd {
 	class TileMap : public sf::Drawable, public sf::Transformable {
 	public:
 		TileMap() {}
-		bool Load(const char* filename);
+		bool Load(const char* texture_filename, const char* map_filename);
 		XmlParser* GetMapParser() { return &map_parser_; }
 
 	private:

@@ -42,16 +42,22 @@ namespace fd {
 			std::string characters = "";	
 			std::vector<std::string> row;
 			for (auto& ch : data) {
-				if (ch == ',' || ch == '\n') { 
+				if (ch >= 48 && ch <= 57) {
+					characters += ch;
+				}
+				else if (ch == ',' && characters.length() > 0) {
 					row.push_back(characters);
 					characters = "";
-					if (ch == '\n') {
-						cur_layer.tile_map.push_back(row);
-						row.clear();
-					}
-					continue;
 				}
-				characters += ch;
+				else if (ch == '\n' && row.size() > 0) { 
+					// Need this check for the very last character in the map.
+					if (characters.length() > 0) {
+						row.push_back(characters);
+					}
+					cur_layer.tile_map.push_back(row);
+					row.clear();
+					characters = "";
+				}
 			}
 			
 			layers.push_back(cur_layer);
@@ -93,12 +99,10 @@ namespace fd {
 			
 			if (print_name == "" || layer.name == print_name) {
 				for (int i = 0; i < layer.tile_map.size(); i++) {
-					for (int j = 0; j < layer.tile_map[i].size(); j++) {
-						if (j % (int)layer.width == 0) {
-							std::cout << '\n';
-						}
+					for (int j = 0; j < layer.tile_map[i].size(); j++) {	
 						std::cout << layer.tile_map[i][j] << " ";
 					}
+					std::cout << '\n';
 				}
 				std::cout << "\n\n";
 			}	
