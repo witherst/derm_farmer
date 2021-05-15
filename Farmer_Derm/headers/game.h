@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace farm_game {	// Should be the name of the directory we're in.
+namespace fd {	// Should be the name of the directory we're in.
 
 	class Game
 	{

@@ -21,13 +21,16 @@
     <ClInclude Include="headers\texture_holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\xml_parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\resource_identifiers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\xml_parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\tile_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +41,13 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="third_party\pugixml-1.11\src\pugixml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\xml_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tile_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

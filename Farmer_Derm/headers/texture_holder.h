@@ -4,14 +4,16 @@
 #include <SFML/Graphics.hpp>
 #include "headers/resource_identifiers.h"
 
-class TextureHolder {
-public:	
-	sf::Texture& Get(Textures::ID id);
-	const sf::Texture& Get(Textures::ID id) const;
-	void Load(Textures::ID id, const std::string& filename);
+namespace fd {
+	class TextureHolder {
+	public:
+		sf::Texture& Get(fd::textures::ID id);
+		const sf::Texture& Get(fd::textures::ID id) const;
+		void Load(fd::textures::ID id, const std::string& filename);
 
-private:
-	std::map <Textures::ID, std::unique_ptr<sf::Texture>> texture_map_;
-};
+	private:
+		std::map <fd::textures::ID, std::unique_ptr<sf::Texture>> texture_map_;
+	};
+} // namespace fd
 #endif
 

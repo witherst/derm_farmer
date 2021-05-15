@@ -3,18 +3,24 @@
 
 // Game specific
 #include "headers/game.h"
+#include "headers/xml_parser.h"
+#include "headers/tile_map.h"
 
 // Third party
 
 int main() {
 	try {
-		farm_game::Game game;
+		fd::Game game;
 		game.Run();
+		//fd::XmlParser map_xml("assets/art/tiled/map/farm_map.tmx");
+		//map_xml.PrintLayerStatistics("ground");
+		//map_xml.PrintObjectStatistics();
+		//tmap.GetMapParser()->PrintLayerStatistics();
+		
 	}
 	catch (std::exception& e) {
 		std::cout << "\nEXCEPTION: " << e.what() << std::endl;
-	}
-	
+	}	
 
 	// Chapter 3, p.50
 
