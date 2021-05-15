@@ -9,11 +9,9 @@
 namespace fd {
 
 	Game::Game()
-		: render_window_(sf::VideoMode(1000, 1000), "Derm Farmer"),
-		player_()
-		//view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f))
-	{
-		//render_window_.setView(view_);
+		: render_window_(sf::VideoMode(640, 480), "Derm Farmer"),
+		player_(),
+		view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f)) {
 	}
 
 	void Game::Run()
@@ -22,7 +20,7 @@ namespace fd {
 		sf::Time time_since_last_update = sf::Time::Zero;
 
 		TileMap tmap; 
-		tmap.Load("assets/art/aseprite/landscape/landscape_sheet.png", "assets/art/tiled/map/farm_map_small.tmx");
+		tmap.Load("assets/art/aseprite/landscape/landscape_sheet.png", "assets/art/tiled/map/farm_map.tmx");
 
 		ResourceHolder<sf::Texture, textures::ID> textures;
 		textures.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
@@ -30,7 +28,7 @@ namespace fd {
 		player_.setTexture(textures.Get(textures::ID::Player));
 		player_.setOrigin(player_.getLocalBounds().width / 2.f, player_.getLocalBounds().height / 2.f);
 		player_.setPosition(100.f, 100.f);
-		player_.setScale(3.f, 3.f);
+		player_.setScale(1.f, 1.f);
 
 		while (render_window_.isOpen()) {
 			time_since_last_update = clock.restart();
@@ -39,6 +37,8 @@ namespace fd {
 				ProcessEvents();
 				Update(time_per_frame);
 				//Render();
+				render_window_.clear();
+				render_window_.setView(view_);
 				render_window_.draw(tmap);
 				render_window_.draw(player_);
 				render_window_.display();
@@ -85,6 +85,7 @@ namespace fd {
 		}
 
 		player_.move(movement * delta_time.asSeconds());
+		view_.setCenter(player_.getPosition());
 	}
 
 	void Game::Render() {

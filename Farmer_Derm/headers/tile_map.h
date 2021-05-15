@@ -13,7 +13,7 @@ namespace fd {
 
 	private:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-		sf::VertexArray vertices_;
+		std::vector<sf::VertexArray> layer_vertices_;
 		sf::Texture tileset_;
 		XmlParser map_parser_;
 	};
