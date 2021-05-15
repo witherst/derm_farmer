@@ -23,8 +23,9 @@ namespace fd {
 		for (unsigned int i = 0; i < map_width; i++) {
 			for (unsigned int j = 0; j < map_height; j++) {
 				// Get the tile number in our map that we will be mapping to.
-				std::cout << map_parser_.GetLayers()[1].tile_map[i][j] << " ";
-				int cur_tile_number = stoi(map_parser_.GetLayers()[1].tile_map[i][j]);
+				// Note: Had to reverse j and i because the window is rendering top -> down then left -> right.
+				int cur_tile_number = stoi(map_parser_.GetLayers()[0].tile_map[j][i]) - 1;
+				if (cur_tile_number < 0) { continue; }	// Empty tile.
 
 				// Find the tile in the tilset texture map.	
 				int tu = cur_tile_number % (tileset_.getSize().x / map_parser_.GetTileWidth());
@@ -44,6 +45,12 @@ namespace fd {
 				quad[1].texCoords = sf::Vector2f((tu + 1) * map_parser_.GetTileWidth(), tv * map_parser_.GetTileHeight());
 				quad[2].texCoords = sf::Vector2f((tu + 1) * map_parser_.GetTileWidth(), (tv + 1) * map_parser_.GetTileHeight());
 				quad[3].texCoords = sf::Vector2f(tu * map_parser_.GetTileWidth(), (tv + 1) * map_parser_.GetTileHeight());
+
+			//	std::cout << "tilenum texture: " << cur_tile_number << "\n";
+			//	std::cout << "\tquad[0] (" << quad[0].texCoords.x << ", " << quad[0].texCoords.y << ")\n";
+			//	std::cout << "\tquad[1] (" << quad[1].texCoords.x << ", " << quad[1].texCoords.y << ")\n";
+			//	std::cout << "\tquad[2] (" << quad[2].texCoords.x << ", " << quad[2].texCoords.y << ")\n";
+			//	std::cout << "\tquad[3] (" << quad[3].texCoords.x << ", " << quad[3].texCoords.y << ")\n";
 			}
 			std::cout << '\n';
 		}
