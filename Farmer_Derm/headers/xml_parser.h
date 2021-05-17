@@ -29,7 +29,7 @@ namespace fd {
 			float pos_x = -1.;
 			float pos_y = -1.;
 			
-			std::vector<std::vector<std::string>> tile_map;
+			std::vector<std::string> tile_map;
 		};
 
 		struct object_group_info {

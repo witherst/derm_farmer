@@ -25,8 +25,7 @@ namespace fd {
 			for (unsigned int i = 0; i < map_width; i++) {
 				for (unsigned int j = 0; j < map_height; j++) {
 					// Get the tile number in our map that we will be mapping to.
-					// Note: Had to reverse j and i because the window is rendering top -> down then left -> right.
-					int cur_tile_number = stoi(cur_layer.tile_map[j][i]) - 1;
+					int cur_tile_number = stoi(cur_layer.tile_map[i + j * map_width]) - 1;
 					// Empty tile.
 					if (cur_tile_number < 0) { continue; }
 

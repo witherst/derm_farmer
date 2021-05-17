@@ -40,22 +40,19 @@ namespace fd {
 
 			std::string data = tool.child("data").child_value();
 			std::string characters = "";	
-			std::vector<std::string> row;
+			int count = 0;
 			for (auto& ch : data) {
 				if (ch >= 48 && ch <= 57) {
 					characters += ch;
 				}
 				else if (ch == ',' && characters.length() > 0) {
-					row.push_back(characters);
+					//row.push_back(characters);
+					cur_layer.tile_map.push_back(characters);
 					characters = "";
 				}
-				else if (ch == '\n' && row.size() > 0) { 
+				else if (ch == '\n' && characters.length() > 0) { 
 					// Need this check for the very last character in the map.
-					if (characters.length() > 0) {
-						row.push_back(characters);
-					}
-					cur_layer.tile_map.push_back(row);
-					row.clear();
+					cur_layer.tile_map.push_back(characters);
 					characters = "";
 				}
 			}
@@ -99,10 +96,10 @@ namespace fd {
 			
 			if (print_name == "" || layer.name == print_name) {
 				for (int i = 0; i < layer.tile_map.size(); i++) {
-					for (int j = 0; j < layer.tile_map[i].size(); j++) {	
-						std::cout << layer.tile_map[i][j] << " ";
+					std::cout << layer.tile_map[i] << " ";
+					if ((i+1) % map_width == 0) {
+						std::cout << '\n';
 					}
-					std::cout << '\n';
 				}
 				std::cout << "\n\n";
 			}	

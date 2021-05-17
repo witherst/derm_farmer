@@ -27,7 +27,7 @@ namespace fd {
 
 		player_.setTexture(textures.Get(textures::ID::Player));
 		player_.setOrigin(player_.getLocalBounds().width / 2.f, player_.getLocalBounds().height / 2.f);
-		player_.setPosition(100.f, 100.f);
+		player_.setPosition(view_.getSize().x / 2., view_.getSize().y / 2.);
 		player_.setScale(1.f, 1.f);
 
 		while (render_window_.isOpen()) {
@@ -41,7 +41,7 @@ namespace fd {
 				render_window_.setView(view_);
 				render_window_.draw(tmap);
 				render_window_.draw(player_);
-				render_window_.display();
+				render_window_.display();	
 			}
 		}
 	}
@@ -69,23 +69,40 @@ namespace fd {
 	}
 
 	void Game::Update(sf::Time delta_time) {
+		float width = view_.getSize().x;
+		float height = view_.getSize().y;
 		sf::Vector2f movement(0.f, 0.f);
-		float distance_to_move = 5.f;
-		if (is_moving_up_) {
+		float distance_to_move = 10.f;
+
+		if (is_moving_up_ && player_.getPosition().y >= 0.0 + player_.getTextureRect().height / 2.0) {
 			movement.y -= distance_to_move;
 		}
-		else if (is_moving_down_) {
+		if (is_moving_down_) {
 			movement.y += distance_to_move;
 		}
-		else if (is_moving_left_) {
+		if (is_moving_left_ && player_.getPosition().x >= 0.0 + player_.getTextureRect().width / 2.0) {
 			movement.x -= distance_to_move;
 		}
-		else if (is_moving_right_) {
+		if (is_moving_right_) {
 			movement.x += distance_to_move;
 		}
 
 		player_.move(movement * delta_time.asSeconds());
-		view_.setCenter(player_.getPosition());
+		// Stop view from scrolling if we're at the edges of the map.	
+		if (player_.getPosition().x < width / 2.0 && player_.getPosition().y < height / 2.0) {
+			return;
+		}
+		else if (player_.getPosition().x >= width / 2.0 && player_.getPosition().y >= height / 2.0) {
+			view_.setCenter(player_.getPosition());	
+		}
+		else if (player_.getPosition().x < width / 2.0) {
+			view_.setCenter({view_.getCenter().x, player_.getPosition().y});
+		}
+		else {
+			view_.setCenter({player_.getPosition().x, view_.getCenter().y});
+		}
+
+			
 	}
 
 	void Game::Render() {
