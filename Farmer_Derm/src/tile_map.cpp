@@ -3,12 +3,8 @@
 
 namespace fd {
 
-	bool TileMap::Load(const char* texture_filename, const char* map_filename) {
-		// Load map texture file.
-		if (!tileset_.loadFromFile(texture_filename)) {
-			return false;
-		}
-		// Load map with our map parser.
+	bool TileMap::Load(const sf::Texture &tileset, const char* map_filename) {
+		tileset_ = tileset;
 		map_parser_.LoadMap(map_filename);
 
 		const int map_height = map_parser_.GetMapWidth();

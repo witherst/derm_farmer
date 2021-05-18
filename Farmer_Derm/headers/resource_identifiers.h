@@ -4,7 +4,7 @@
 namespace fd {
 	namespace textures {
 		enum class ID {
-			Landscape,
+			MapPng,
 			Player,
 		};
 	} // namespace Textures

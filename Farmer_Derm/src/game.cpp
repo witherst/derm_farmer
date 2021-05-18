@@ -1,10 +1,6 @@
 #include <iostream>
 
 #include "headers/game.h"
-#include "headers/resource_holder.h"
-#include "headers/resource_identifiers.h"
-#include "headers/texture_holder.h"
-#include "headers/tile_map.h"
 
 namespace fd {
 
@@ -18,14 +14,13 @@ namespace fd {
 	{
 		sf::Clock clock;
 		sf::Time time_since_last_update = sf::Time::Zero;
+ 	
+		textures_.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
+		textures_.Load(textures::ID::MapPng, "assets/art/aseprite/landscape/landscape_sheet.png");
 
-		TileMap tmap; 
-		tmap.Load("assets/art/aseprite/landscape/landscape_sheet.png", "assets/art/tiled/map/farm_map.tmx");
+		tmap_.Load(textures_.Get(textures::ID::MapPng), "assets/art/tiled/map/farm_map.tmx");
 
-		ResourceHolder<sf::Texture, textures::ID> textures;
-		textures.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
-
-		player_.setTexture(textures.Get(textures::ID::Player));
+		player_.setTexture(textures_.Get(textures::ID::Player));
 		player_.setOrigin(player_.getLocalBounds().width / 2.f, player_.getLocalBounds().height / 2.f);
 		player_.setPosition(view_.getSize().x / 2., view_.getSize().y / 2.);
 		player_.setScale(1.f, 1.f);
@@ -36,12 +31,7 @@ namespace fd {
 				time_since_last_update -= time_per_frame;
 				ProcessEvents();
 				Update(time_per_frame);
-				//Render();
-				render_window_.clear();
-				render_window_.setView(view_);
-				render_window_.draw(tmap);
-				render_window_.draw(player_);
-				render_window_.display();	
+				Render();	
 			}
 		}
 	}
@@ -107,6 +97,8 @@ namespace fd {
 
 	void Game::Render() {
 		render_window_.clear();
+		render_window_.setView(view_);
+		render_window_.draw(tmap_);
 		render_window_.draw(player_);
 		render_window_.display();
 	}
