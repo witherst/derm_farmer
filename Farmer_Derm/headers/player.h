@@ -5,7 +5,7 @@
 
 namespace fd {
 
-	class Player : public Entity{
+	class Player : public Entity {
 	public:
 
 	private:

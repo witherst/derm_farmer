@@ -34,6 +34,8 @@ namespace fd {	// Should be the name of the directory we're in.
 		sf::Time time_per_frame = sf::seconds(1. / fps_);
 		sf::View view_;
 		TileMap tmap_;
+
+		sf::Vector2f player_last_good_pos_ = {};	// TODO: Move to player entity.
 	};
 
 }	// namespace fd

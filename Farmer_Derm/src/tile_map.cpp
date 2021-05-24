@@ -11,6 +11,17 @@ namespace fd {
 		const int map_width = map_parser_.GetMapHeight();	
 
 		for (auto& cur_layer : map_parser_.GetLayers()) {
+			// Populate collision set with tile numbers.
+			if (cur_layer.layer_type == XmlParser::LayerType::kCollider) {
+				for (unsigned int i = 0; i < map_width; i++) {
+					for (unsigned int j = 0; j < map_height; j++) {
+						if (cur_layer.tile_map[i + j * map_width] != "0") {
+							collision_set.insert(MakeTileKey(i, j));
+						}
+					}
+				}	
+				continue;
+			}
 			sf::VertexArray	vertices;
 			// Set primitive type and resize vertex array to fit our level size.
 			vertices.setPrimitiveType(sf::Quads);
@@ -45,10 +56,14 @@ namespace fd {
 					quad[3].texCoords = sf::Vector2f(tu * map_parser_.GetTileWidth(), (tv + 1) * map_parser_.GetTileHeight());	
 				}
 			}
-			layer_vertices_.push_back(vertices);
+			layer_vertex_array_.push_back(vertices);
 		}	
 
 		return true;
+	}
+
+	std::string TileMap::MakeTileKey(int i, int j) const {
+		return std::to_string(i) + ',' + std::to_string(j);
 	}
 
 	void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -59,7 +74,7 @@ namespace fd {
 		states.texture = &tileset_;
 		
 		// Draw the layers
-		for (auto& layer : layer_vertices_) {
+		for (auto& layer : layer_vertex_array_) {
 			target.draw(layer, states);
 		}
 	}

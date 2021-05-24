@@ -36,7 +36,15 @@ namespace fd {
 			cur_layer.name = tool.attribute("name").as_string();
 			cur_layer.id = tool.attribute("id").as_int();
 			cur_layer.height = tool.attribute("height").as_float();
-			cur_layer.width = tool.attribute("width").as_float();
+			cur_layer.width = tool.attribute("width").as_float();		
+			
+			// Get custom properties.
+			for (pugi::xml_node property_tool = tool.child("properties").child("property"); property_tool; property_tool = property_tool.next_sibling("property")) {
+				std::string name_of_property = property_tool.attribute("name").as_string();
+				if (name_of_property == "isCollision") {
+					cur_layer.layer_type = LayerType::kCollider;
+				}
+			}
 
 			std::string data = tool.child("data").child_value();
 			std::string characters = "";	
@@ -46,7 +54,6 @@ namespace fd {
 					characters += ch;
 				}
 				else if (ch == ',' && characters.length() > 0) {
-					//row.push_back(characters);
 					cur_layer.tile_map.push_back(characters);
 					characters = "";
 				}

@@ -42,6 +42,7 @@ namespace fd {
 			switch (event.type) {
 			case sf::Event::Resized:	// So sprites don't get stretched.
 				view_.setSize(event.size.width, event.size.height);
+				view_.setCenter(event.size.width / 2, event.size.height / 2);
 				render_window_.setView(view_);
 				break;
 			case sf::Event::KeyPressed:
@@ -62,10 +63,10 @@ namespace fd {
 		float width = view_.getSize().x;
 		float height = view_.getSize().y;
 		sf::Vector2f movement(0.f, 0.f);
-		float distance_to_move = 10.f;
+		float distance_to_move = 2.5;
 
 		if (is_moving_up_ && player_.getPosition().y >= 0.0 + player_.getTextureRect().height / 2.0) {
-			movement.y -= distance_to_move;
+			movement.y -= distance_to_move;	
 		}
 		if (is_moving_down_) {
 			movement.y += distance_to_move;
@@ -76,7 +77,22 @@ namespace fd {
 		if (is_moving_right_) {
 			movement.x += distance_to_move;
 		}
+	
+		// Tile that player is in.
+		//std::cout << "(" << floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()) <<
+		//	"," << floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()) << ")" << "\n";
 
+		std::string player_tile = tmap_.MakeTileKey(floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()),
+													floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()));
+		
+		// Check for collision against our collision set.
+		if (tmap_.GetCollisionSet()->count(player_tile) > 0) {
+			player_.setPosition(player_last_good_pos_);
+			return;
+		}
+
+		// std::cout << player_last_good_pos_.x << ", " << player_last_good_pos_.y << "\n";
+		player_last_good_pos_ = player_.getPosition();
 		player_.move(movement * delta_time.asSeconds());
 		// Stop view from scrolling if we're at the edges of the map.	
 		if (player_.getPosition().x < width / 2.0 && player_.getPosition().y < height / 2.0) {

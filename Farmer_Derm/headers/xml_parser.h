@@ -16,19 +16,22 @@ namespace fd {
 			LoadMap(filename);
 		}
 
+		// To print out this enum outside of this class:
+		//	std::cout << static_cast<std::underlying_type<XmlParser::LayerType>::type>(cur_layer.layer_type) << std::endl;
 		enum class LayerType {
-			kTiles,
+			kRenderTiles,
 			kCollider,
+			kInvisible,
 		};
 
 		struct layer_info {
-			std::string name = "";
-			int id = 0;
+			LayerType layer_type = LayerType::kRenderTiles;
 			float width = 0.;
 			float height = 0.;
 			float pos_x = -1.;
 			float pos_y = -1.;
-			
+			int id = 0;
+			std::string name = "";	
 			std::vector<std::string> tile_map;
 		};
 
