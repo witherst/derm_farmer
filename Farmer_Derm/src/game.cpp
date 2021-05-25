@@ -1,10 +1,6 @@
 #include <iostream>
 
 #include "headers/game.h"
-#include "headers/resource_holder.h"
-#include "headers/resource_identifiers.h"
-#include "headers/texture_holder.h"
-#include "headers/tile_map.h"
 
 namespace fd {
 
@@ -18,16 +14,15 @@ namespace fd {
 	{
 		sf::Clock clock;
 		sf::Time time_since_last_update = sf::Time::Zero;
+ 	
+		textures_.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
+		textures_.Load(textures::ID::MapPng, "assets/art/aseprite/landscape/landscape_sheet.png");
 
-		TileMap tmap; 
-		tmap.Load("assets/art/aseprite/landscape/landscape_sheet.png", "assets/art/tiled/map/farm_map.tmx");
+		tmap_.Load(textures_.Get(textures::ID::MapPng), "assets/art/tiled/map/farm_map.tmx");
 
-		ResourceHolder<sf::Texture, textures::ID> textures;
-		textures.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
-
-		player_.setTexture(textures.Get(textures::ID::Player));
+		player_.setTexture(textures_.Get(textures::ID::Player));
 		player_.setOrigin(player_.getLocalBounds().width / 2.f, player_.getLocalBounds().height / 2.f);
-		player_.setPosition(100.f, 100.f);
+		player_.setPosition(view_.getSize().x / 2., view_.getSize().y / 2.);
 		player_.setScale(1.f, 1.f);
 
 		while (render_window_.isOpen()) {
@@ -36,12 +31,7 @@ namespace fd {
 				time_since_last_update -= time_per_frame;
 				ProcessEvents();
 				Update(time_per_frame);
-				//Render();
-				render_window_.clear();
-				render_window_.setView(view_);
-				render_window_.draw(tmap);
-				render_window_.draw(player_);
-				render_window_.display();
+				Render();	
 			}
 		}
 	}
@@ -52,6 +42,7 @@ namespace fd {
 			switch (event.type) {
 			case sf::Event::Resized:	// So sprites don't get stretched.
 				view_.setSize(event.size.width, event.size.height);
+				view_.setCenter(event.size.width / 2, event.size.height / 2);
 				render_window_.setView(view_);
 				break;
 			case sf::Event::KeyPressed:
@@ -69,27 +60,61 @@ namespace fd {
 	}
 
 	void Game::Update(sf::Time delta_time) {
+		float width = view_.getSize().x;
+		float height = view_.getSize().y;
 		sf::Vector2f movement(0.f, 0.f);
-		float distance_to_move = 5.f;
-		if (is_moving_up_) {
-			movement.y -= distance_to_move;
+		float distance_to_move = 2.5;
+
+		if (is_moving_up_ && player_.getPosition().y >= 0.0 + player_.getTextureRect().height / 2.0) {
+			movement.y -= distance_to_move;	
 		}
-		else if (is_moving_down_) {
+		if (is_moving_down_) {
 			movement.y += distance_to_move;
 		}
-		else if (is_moving_left_) {
+		if (is_moving_left_ && player_.getPosition().x >= 0.0 + player_.getTextureRect().width / 2.0) {
 			movement.x -= distance_to_move;
 		}
-		else if (is_moving_right_) {
+		if (is_moving_right_) {
 			movement.x += distance_to_move;
 		}
+	
+		// Tile that player is in.
+		//std::cout << "(" << floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()) <<
+		//	"," << floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()) << ")" << "\n";
 
+		std::string player_tile = tmap_.MakeTileKey(floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()),
+													floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()));
+		
+		// Check for collision against our collision set.
+		if (tmap_.GetCollisionSet()->count(player_tile) > 0) {
+			player_.setPosition(player_last_good_pos_);
+			return;
+		}
+
+		// std::cout << player_last_good_pos_.x << ", " << player_last_good_pos_.y << "\n";
+		player_last_good_pos_ = player_.getPosition();
 		player_.move(movement * delta_time.asSeconds());
-		view_.setCenter(player_.getPosition());
+		// Stop view from scrolling if we're at the edges of the map.	
+		if (player_.getPosition().x < width / 2.0 && player_.getPosition().y < height / 2.0) {
+			return;
+		}
+		else if (player_.getPosition().x >= width / 2.0 && player_.getPosition().y >= height / 2.0) {
+			view_.setCenter(player_.getPosition());	
+		}
+		else if (player_.getPosition().x < width / 2.0) {
+			view_.setCenter({view_.getCenter().x, player_.getPosition().y});
+		}
+		else {
+			view_.setCenter({player_.getPosition().x, view_.getCenter().y});
+		}
+
+			
 	}
 
 	void Game::Render() {
 		render_window_.clear();
+		render_window_.setView(view_);
+		render_window_.draw(tmap_);
 		render_window_.draw(player_);
 		render_window_.display();
 	}
