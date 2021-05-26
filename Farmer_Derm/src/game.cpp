@@ -6,24 +6,15 @@ namespace fd {
 
 	Game::Game()
 		: render_window_(sf::VideoMode(640, 480), "Derm Farmer"),
-		player_(),
-		view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f)) {
-	}
+			player_(), view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f)) {
+		LoadResources();
+		SetupEntities();
+	}	
 
 	void Game::Run()
 	{
 		sf::Clock clock;
-		sf::Time time_since_last_update = sf::Time::Zero;
- 	
-		textures_.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
-		textures_.Load(textures::ID::MapPng, "assets/art/aseprite/landscape/landscape_sheet.png");
-
-		tmap_.Load(textures_.Get(textures::ID::MapPng), "assets/art/tiled/map/farm_map.tmx");
-
-		player_.setTexture(textures_.Get(textures::ID::Player));
-		player_.setOrigin(player_.getLocalBounds().width / 2.f, player_.getLocalBounds().height / 2.f);
-		player_.setPosition(view_.getSize().x / 2., view_.getSize().y / 2.);
-		player_.setScale(1.f, 1.f);
+		sf::Time time_since_last_update = sf::Time::Zero;	
 
 		while (render_window_.isOpen()) {
 			time_since_last_update = clock.restart();
@@ -34,6 +25,16 @@ namespace fd {
 				Render();	
 			}
 		}
+	}
+
+	void Game::LoadResources() {
+		textures_holder_.Load(textures::ID::Player, "assets/art/pixil/derm/derm_37x49.png");
+		textures_holder_.Load(textures::ID::MapPng, "assets/art/aseprite/landscape/landscape_sheet.png");
+		tmap_.Load(textures_holder_.Get(textures::ID::MapPng), "assets/art/tiled/map/farm_map.tmx");
+	}
+
+	void Game::SetupEntities() {
+		main_player_.SetupEntity(textures_holder_, view_);	
 	}
 
 	void Game::ProcessEvents() {
@@ -115,7 +116,8 @@ namespace fd {
 		render_window_.clear();
 		render_window_.setView(view_);
 		render_window_.draw(tmap_);
-		render_window_.draw(player_);
+		render_window_.draw(main_player_);
+		//render_window_.draw(player_);
 		render_window_.display();
 	}
 
