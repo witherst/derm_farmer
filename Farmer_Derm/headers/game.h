@@ -20,7 +20,7 @@ namespace fd {	// Should be the name of the directory we're in.
 
 	private:
 		// Internal functions.
-		void HandlePlayerInput(sf::Keyboard::Key, bool);
+		void HandlePlayerInput(sf::Keyboard::Key key, bool is_pressed);
 		void ProcessEvents();
 		void Render();
 		void Update(sf::Time);
@@ -35,6 +35,7 @@ namespace fd {	// Should be the name of the directory we're in.
 		ResourceHolder<sf::Texture, textures::ID> textures_holder_;
 		sf::Sprite player_;
 		sf::RenderWindow render_window_;
+		sf::Time delta_time_{};
 		sf::Time time_per_frame = sf::seconds(1. / fps_);
 		sf::View view_;
 		TileMap tmap_;

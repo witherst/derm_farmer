@@ -61,28 +61,12 @@ namespace fd {
 	}
 
 	void Game::Update(sf::Time delta_time) {
+		delta_time_ = delta_time;
 		float width = view_.getSize().x;
 		float height = view_.getSize().y;
-		sf::Vector2f movement(0.f, 0.f);
-		float distance_to_move = 2.5;
 
-		if (is_moving_up_ && player_.getPosition().y >= 0.0 + player_.getTextureRect().height / 2.0) {
-			movement.y -= distance_to_move;	
-		}
-		if (is_moving_down_) {
-			movement.y += distance_to_move;
-		}
-		if (is_moving_left_ && player_.getPosition().x >= 0.0 + player_.getTextureRect().width / 2.0) {
-			movement.x -= distance_to_move;
-		}
-		if (is_moving_right_) {
-			movement.x += distance_to_move;
-		}
+		main_player_.HandleMovement(delta_time);
 	
-		// Tile that player is in.
-		//std::cout << "(" << floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()) <<
-		//	"," << floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()) << ")" << "\n";
-
 		std::string player_tile = tmap_.MakeTileKey(floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()),
 													floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()));
 		
@@ -92,9 +76,7 @@ namespace fd {
 			return;
 		}
 
-		// std::cout << player_last_good_pos_.x << ", " << player_last_good_pos_.y << "\n";
 		player_last_good_pos_ = player_.getPosition();
-		player_.move(movement * delta_time.asSeconds());
 		// Stop view from scrolling if we're at the edges of the map.	
 		if (player_.getPosition().x < width / 2.0 && player_.getPosition().y < height / 2.0) {
 			return;
@@ -107,9 +89,7 @@ namespace fd {
 		}
 		else {
 			view_.setCenter({player_.getPosition().x, view_.getCenter().y});
-		}
-
-			
+		}	
 	}
 
 	void Game::Render() {
@@ -117,23 +97,11 @@ namespace fd {
 		render_window_.setView(view_);
 		render_window_.draw(tmap_);
 		render_window_.draw(main_player_);
-		//render_window_.draw(player_);
 		render_window_.display();
 	}
 
 	void Game::HandlePlayerInput(sf::Keyboard::Key key, bool is_pressed) {
-		if (key == sf::Keyboard::W) {
-			is_moving_up_ = is_pressed;
-		}
-		else if (key == sf::Keyboard::S) {
-			is_moving_down_ = is_pressed;
-		}
-		else if (key == sf::Keyboard::A) {
-			is_moving_left_ = is_pressed;
-		}
-		else if (key == sf::Keyboard::D) {
-			is_moving_right_ = is_pressed;
-		}
+		main_player_.HandleKeyPress(key, is_pressed);
 	}
 
 } // namespace fd
