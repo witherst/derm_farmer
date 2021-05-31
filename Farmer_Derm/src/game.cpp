@@ -61,42 +61,45 @@ namespace fd {
 	}
 
 	void Game::Update(sf::Time delta_time) {
-		delta_time_ = delta_time;
+		delta_time_ = delta_time;	
+
+		// Update main player's movement.
+		main_player_.HandleMovement(delta_time, tmap_);		
+
+		// Update view.
+		UpdateView();
+	}
+
+	void Game::UpdateView() {
+		// Stop view from scrolling if we're at the edges of the map.	
 		float width = view_.getSize().x;
 		float height = view_.getSize().y;
-
-		main_player_.HandleMovement(delta_time);
-	
-		std::string player_tile = tmap_.MakeTileKey(floor(player_.getPosition().x / tmap_.GetMapParser()->GetTileWidth()),
-													floor(player_.getPosition().y / tmap_.GetMapParser()->GetTileHeight()));
-		
-		// Check for collision against our collision set.
-		if (tmap_.GetCollisionSet()->count(player_tile) > 0) {
-			player_.setPosition(player_last_good_pos_);
+		if (main_player_.getPosition().x < width / 2.0 && main_player_.getPosition().y < height / 2.0) {
 			return;
 		}
-
-		player_last_good_pos_ = player_.getPosition();
-		// Stop view from scrolling if we're at the edges of the map.	
-		if (player_.getPosition().x < width / 2.0 && player_.getPosition().y < height / 2.0) {
-			return;
+		else if (main_player_.getPosition().x >= width / 2.0 && main_player_.getPosition().y >= height / 2.0) {
+			view_.setCenter(main_player_.getPosition());	
 		}
-		else if (player_.getPosition().x >= width / 2.0 && player_.getPosition().y >= height / 2.0) {
-			view_.setCenter(player_.getPosition());	
-		}
-		else if (player_.getPosition().x < width / 2.0) {
-			view_.setCenter({view_.getCenter().x, player_.getPosition().y});
+		else if (main_player_.getPosition().x < width / 2.0) {
+			view_.setCenter({view_.getCenter().x, main_player_.getPosition().y});
 		}
 		else {
-			view_.setCenter({player_.getPosition().x, view_.getCenter().y});
+			view_.setCenter({main_player_.getPosition().x, view_.getCenter().y});
 		}	
+
 	}
 
 	void Game::Render() {
 		render_window_.clear();
 		render_window_.setView(view_);
+
+		// Draw map.
 		render_window_.draw(tmap_);
+
+		// Draw player.
 		render_window_.draw(main_player_);
+
+		// Display.
 		render_window_.display();
 	}
 

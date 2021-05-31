@@ -24,12 +24,9 @@ namespace fd {	// Should be the name of the directory we're in.
 		void ProcessEvents();
 		void Render();
 		void Update(sf::Time);
+		void UpdateView();
 
-		// Member variables.
-		bool is_moving_up_{};
-		bool is_moving_down_{};
-		bool is_moving_left_{};
-		bool is_moving_right_{};
+		// Member variables.	
 		float fps_ = 60.f;
 		Player main_player_;
 		ResourceHolder<sf::Texture, textures::ID> textures_holder_;
@@ -38,9 +35,7 @@ namespace fd {	// Should be the name of the directory we're in.
 		sf::Time delta_time_{};
 		sf::Time time_per_frame = sf::seconds(1. / fps_);
 		sf::View view_;
-		TileMap tmap_;
-
-		sf::Vector2f player_last_good_pos_ = {};	// TODO: Move to player entity.
+		TileMap tmap_;	
 	};
 
 }	// namespace fd
