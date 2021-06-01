@@ -14,8 +14,8 @@ namespace fd {
 		PopulateObjects();
 	}
 	void XmlParser::PopulateMapAttrs() {
-		map_width = doc.child("map").attribute("width").as_int();
-		map_height = doc.child("map").attribute("height").as_int();
+		num_tiles_x = doc.child("map").attribute("width").as_int();
+		num_tiles_y = doc.child("map").attribute("height").as_int();
 		tile_width = doc.child("map").attribute("tilewidth").as_int();
 		tile_height = doc.child("map").attribute("tileheight").as_int();
 		tile_source = doc.child("map").child("tileset").attribute("source").as_string();
@@ -91,7 +91,7 @@ namespace fd {
 
 	void XmlParser::PrintLayerStatistics(std::string print_name) {
 		std::cout << "\n************Map Stats************\n";
-		std::cout << "Map width:\t" << map_width << " tiles\tMap height:\t" << map_height << " tiles\n";
+		std::cout << "Number of map tiles in x:\t" << num_tiles_x << " tiles\tNumber of map tiles in y: \t" << num_tiles_y << " tiles\n";
 		std::cout << "Tile width:\t" << tile_width << "px\t\tTile height:\t" << tile_height << "px\n";
 		std::cout << "Tile source:\t" << tile_source << "\tFirstgid:\t" << firstgid << "\n";
 
@@ -104,7 +104,7 @@ namespace fd {
 			if (print_name == "" || layer.name == print_name) {
 				for (int i = 0; i < layer.tile_map.size(); i++) {
 					std::cout << layer.tile_map[i] << " ";
-					if ((i+1) % map_width == 0) {
+					if ((i+1) % num_tiles_x == 0) {
 						std::cout << '\n';
 					}
 				}

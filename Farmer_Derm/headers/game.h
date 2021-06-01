@@ -20,6 +20,9 @@ namespace fd {	// Should be the name of the directory we're in.
 
 	private:
 		// Internal functions.
+		bool ShouldStopViewScrolling(const float width, const float height);
+		bool ShouldStopHorizontalScrolling(const float width);
+		bool ShouldStopVerticalScrolling(const float height);
 		void HandlePlayerInput(sf::Keyboard::Key key, bool is_pressed);
 		void ProcessEvents();
 		void Render();
@@ -30,7 +33,6 @@ namespace fd {	// Should be the name of the directory we're in.
 		float fps_ = 60.f;
 		Player main_player_;
 		ResourceHolder<sf::Texture, textures::ID> textures_holder_;
-		sf::Sprite player_;
 		sf::RenderWindow render_window_;
 		sf::Time delta_time_{};
 		sf::Time time_per_frame = sf::seconds(1. / fps_);

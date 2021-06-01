@@ -6,7 +6,7 @@ namespace fd {
 
 	Game::Game()
 		: render_window_(sf::VideoMode(640, 480), "Derm Farmer"),
-			player_(), view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f)) {
+			view_(sf::FloatRect(0.f, 0.f, 640.f, 480.f)) {
 		LoadResources();
 		SetupEntities();
 	}	
@@ -64,29 +64,36 @@ namespace fd {
 		delta_time_ = delta_time;	
 
 		// Update main player's movement.
-		main_player_.HandleMovement(delta_time, tmap_);		
+		main_player_.HandleMovement(delta_time, tmap_, view_);		
 
 		// Update view.
 		UpdateView();
 	}
 
 	void Game::UpdateView() {
-		// Stop view from scrolling if we're at the edges of the map.	
-		float width = view_.getSize().x;
-		float height = view_.getSize().y;
-		if (main_player_.getPosition().x < width / 2.0 && main_player_.getPosition().y < height / 2.0) {
+		float view_width = view_.getSize().x;
+		float view_height = view_.getSize().y;
+
+		// Check to see if we're near (0,0) or (max_width, max_height) of the map and stop
+		//	having the camera follow the player.
+		if (ShouldStopViewScrolling(view_width, view_height)) {
 			return;
-		}
-		else if (main_player_.getPosition().x >= width / 2.0 && main_player_.getPosition().y >= height / 2.0) {
-			view_.setCenter(main_player_.getPosition());	
-		}
-		else if (main_player_.getPosition().x < width / 2.0) {
-			view_.setCenter({view_.getCenter().x, main_player_.getPosition().y});
-		}
-		else {
-			view_.setCenter({main_player_.getPosition().x, view_.getCenter().y});
 		}	
 
+		// Check if we want to stop vertical scrolling but keep scrolling horizontally.
+		if (ShouldStopVerticalScrolling(view_height)) {
+			view_.setCenter({main_player_.getPosition().x, view_.getCenter().y});
+			return;
+		}
+
+		// Check if we want to stop horizontal scrolling but keep scrolling vertically.
+		if (ShouldStopHorizontalScrolling(view_width)) {
+			view_.setCenter({view_.getCenter().x, main_player_.getPosition().y});
+			return;
+		}
+	
+		view_.setCenter(main_player_.getPosition());
+		
 	}
 
 	void Game::Render() {
@@ -101,6 +108,48 @@ namespace fd {
 
 		// Display.
 		render_window_.display();
+	}
+
+
+	/*
+		Check to see if we should stop view from scrolling horizontally and vertically if we're at the corners of 
+		the map.
+		TODO: Make this function look better. This seems...messy.
+	*/
+	bool Game::ShouldStopViewScrolling(const float view_width, const float view_height) {
+		float view_width_buffer = view_width / 2.0;
+		float view_height_buffer = view_height / 2.0;
+		if (main_player_.getPosition().x < view_width_buffer && main_player_.getPosition().y < view_height_buffer ||
+			
+			main_player_.getPosition().x >= tmap_.GetMapParser()->GetMapWidthInPixels() - view_width_buffer && 
+			main_player_.getPosition().y < view_height_buffer ||
+
+			main_player_.getPosition().y >= tmap_.GetMapParser()->GetMapHeightInPixels() - view_height_buffer &&
+			main_player_.getPosition().x < view_width_buffer ||
+
+			main_player_.getPosition().x >= tmap_.GetMapParser()->GetMapWidthInPixels() - view_width_buffer && 
+			main_player_.getPosition().y >= tmap_.GetMapParser()->GetMapHeightInPixels() - view_height_buffer) {
+			return true;
+		}
+		return false;
+	}
+
+	bool Game::ShouldStopHorizontalScrolling(const float view_width) {
+		float view_width_buffer = view_width / 2.0;
+		if (main_player_.getPosition().x < view_width_buffer ||
+			main_player_.getPosition().x >= tmap_.GetMapParser()->GetMapWidthInPixels() - view_width_buffer) {
+			return true;
+		}
+		return false;
+	}
+
+	bool Game::ShouldStopVerticalScrolling(const float view_height) {
+		float view_height_buffer = view_height / 2.0;
+		if (main_player_.getPosition().y < view_height_buffer ||
+			main_player_.getPosition().y >= tmap_.GetMapParser()->GetMapHeightInPixels() - view_height_buffer) {
+			return true;
+		}
+		return false;
 	}
 
 	void Game::HandlePlayerInput(sf::Keyboard::Key key, bool is_pressed) {

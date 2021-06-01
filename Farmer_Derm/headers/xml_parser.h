@@ -41,14 +41,16 @@ namespace fd {
 			std::vector<layer_info> object_info;
 		};
 
-		const int GetMapWidth()								{ return map_width; }
-		const int GetMapHeight()							{ return map_height; }
-		const int GetTileWidth()							{ return tile_width; }
-		const int GetTileHeight()							{ return tile_height; }
-		const int GetFirstGid()								{ return firstgid; }
-		const std::string GetTileSource()					{ return tile_source; }
-		const std::vector<layer_info> GetLayers()			{ return layers; }
-		const std::vector<object_group_info> GetObjects()	{ return objects; }
+		const int GetMapNumTilesInX()								{ return num_tiles_x; }
+		const int GetMapNumTilesInY()								{ return num_tiles_y; }
+		const int GetMapHeightInPixels()							{ return GetMapNumTilesInY() * GetTileHeightInPixels(); }
+		const int GetMapWidthInPixels()								{ return GetMapNumTilesInX() * GetTileWidthInPixels(); }
+		const int GetTileWidthInPixels()							{ return tile_width; }
+		const int GetTileHeightInPixels()							{ return tile_height; }
+		const int GetFirstGid()										{ return firstgid; }
+		const std::string GetTileSource()							{ return tile_source; }
+		const std::vector<layer_info> GetLayers()					{ return layers; }
+		const std::vector<object_group_info> GetObjects()			{ return objects; }
 		void LoadMap(const char* filename);	
 		void PrintLayerStatistics(std::string print_name = "");
 		void PrintObjectStatistics(std::string print_name = "");
@@ -59,8 +61,10 @@ namespace fd {
 		void PopulateObjects();	
 
 		int firstgid = 0;
-		int map_width = 0;
-		int map_height = 0;
+		int map_width_in_pixels = 0;
+		int map_height_in_pixels = 0;
+		int num_tiles_x = 0;
+		int num_tiles_y = 0;
 		int tile_width = 0;
 		int tile_height = 0;
 		std::string tile_source = "";

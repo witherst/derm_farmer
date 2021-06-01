@@ -4,8 +4,8 @@
 namespace fd {
 	void Entity::HandleCollisions(TileMap& tmap) {
 		// Check for collision against our collision set.
-		std::string player_tile = tmap.MakeTileKey(floor(getPosition().x / tmap.GetMapParser()->GetTileWidth()),
-												   floor(getPosition().y / tmap.GetMapParser()->GetTileHeight()));
+		std::string player_tile = tmap.MakeTileKey(floor(getPosition().x / tmap.GetMapParser()->GetTileWidthInPixels()),
+												   floor(getPosition().y / tmap.GetMapParser()->GetTileHeightInPixels()));
 		if (tmap.GetCollisionSet()->count(player_tile) > 0) {
 			setPosition(player_last_good_pos_);
 			return;
@@ -27,19 +27,23 @@ namespace fd {
 		}
 	}
 
-	void Entity::HandleMovement(const sf::Time delta_time, TileMap& tmap) {
+	void Entity::HandleMovement(const sf::Time delta_time, TileMap& tmap, const sf::View& view) {
 		sf::Vector2f movement(0.f, 0.f);
+		float width_buffer = view.getSize().x / 2.0;
+		float height_buffer = view.getSize().y / 2.0;
+		float sprite_half_height_buffer = sprite_.getTextureRect().height / 2.0;
+		float sprite_half_width_buffer = sprite_.getTextureRect().width / 2.0;
 
-		if (is_moving_up_ && getPosition().y >= 0.0 + sprite_.getTextureRect().height / 2.0) {
+		if (is_moving_up_ && getPosition().y >= 0.0 + sprite_half_height_buffer) {
 			movement.y -= GetMovementSpeed();	
 		}
-		if (is_moving_down_) {
+		if (is_moving_down_ && getPosition().y <= tmap.GetMapParser()->GetMapHeightInPixels() - sprite_half_height_buffer) {
 			movement.y += GetMovementSpeed();
 		}
-		if (is_moving_left_ && getPosition().x >= 0.0 + sprite_.getTextureRect().width / 2.0) {
+		if (is_moving_left_ && getPosition().x >= 0.0 + sprite_half_width_buffer) {
 			movement.x -= GetMovementSpeed();
 		}
-		if (is_moving_right_) {
+		if (is_moving_right_ && getPosition().x <= tmap.GetMapParser()->GetMapWidthInPixels() - sprite_half_width_buffer) {
 			movement.x += GetMovementSpeed();
 		}
 		move(movement * delta_time.asSeconds());

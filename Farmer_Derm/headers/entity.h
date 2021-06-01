@@ -15,7 +15,7 @@ namespace fd {
 		const float GetMovementSpeed() const { return speed_; }
 		void HandleCollisions(TileMap& tmap);
 		void HandleKeyPress(const sf::Keyboard::Key key, const bool is_pressed);
-		void HandleMovement(const sf::Time delta_time, TileMap& tilemap);
+		void HandleMovement(const sf::Time delta_time, TileMap& tilemap, const sf::View& view);
 		void SetMovementSpeed(const float distance);
 		void SetTexture(sf::Texture& texture);	
 		void SetSpriteTexture(sf::Texture& texture);
@@ -30,7 +30,7 @@ namespace fd {
 		bool is_moving_down_{};
 		bool is_moving_left_{};
 		bool is_moving_right_{};
-		float speed_ = 2.0;	// Default.
+		float speed_ = 10.0;	// Default.
 		sf::Sprite sprite_;
 		sf::Texture texture_;
 		sf::Vector2f player_last_good_pos_ = {};
