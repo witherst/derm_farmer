@@ -52,6 +52,12 @@ namespace fd {
 			case sf::Event::KeyReleased:
 				HandlePlayerInput(event.key.code, false);
 				break;
+			case sf::Event::MouseButtonPressed:
+				HandlePlayerInput(event.mouseButton.button, true);
+				break;
+		//	case sf::Event::MouseButtonReleased:
+		//		HandlePlayerInput(event.mouseButton.button, false);
+		//		break;
 			case sf::Event::Closed:
 				render_window_.close();
 				return;
@@ -154,6 +160,10 @@ namespace fd {
 
 	void Game::HandlePlayerInput(sf::Keyboard::Key key, bool is_pressed) {
 		main_player_.HandleKeyPress(key, is_pressed);
+	}
+
+	void Game::HandlePlayerInput(sf::Mouse::Button button, bool is_pressed) {
+		main_player_.HandleMouseButtonPress(button, is_pressed, render_window_, view_);
 	}
 
 } // namespace fd

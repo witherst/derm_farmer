@@ -24,6 +24,7 @@ namespace fd {	// Should be the name of the directory we're in.
 		bool ShouldStopHorizontalScrolling(const float width);
 		bool ShouldStopVerticalScrolling(const float height);
 		void HandlePlayerInput(sf::Keyboard::Key key, bool is_pressed);
+		void HandlePlayerInput(sf::Mouse::Button button, bool is_pressed);
 		void ProcessEvents();
 		void Render();
 		void Update(sf::Time);

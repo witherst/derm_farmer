@@ -27,6 +27,17 @@ namespace fd {
 		}
 	}
 
+	void Entity::HandleMouseButtonPress(const sf::Mouse::Button button, const bool is_pressed, const sf::RenderWindow& window, const sf::View& view) {
+		if (button == sf::Mouse::Button::Right) {
+			// If the view is not centered (i.e., if the view has been scrolled right or down), we have to offset the waypoint
+			// by the amount that has been scrolled.
+			int x_offset = view.getCenter().x - (view.getSize().x / 2);
+			int y_offset = view.getCenter().y - (view.getSize().y / 2);
+			waypoints[0] = { sf::Mouse::getPosition(window).x + x_offset, sf::Mouse::getPosition(window).y + y_offset };
+			AnimatePlayer();
+		}
+	}
+
 	void Entity::HandleMovement(const sf::Time delta_time, TileMap& tmap, const sf::View& view) {
 		sf::Vector2f movement(0.f, 0.f);
 		float width_buffer = view.getSize().x / 2.0;
@@ -87,7 +98,26 @@ namespace fd {
 		states.texture = &texture_;
 		
 		// Draw the layers
-		target.draw(sprite_, states);	
+		target.draw(sprite_, states);
+		DrawLines(waypoints, getPosition(), target);	
+		
+	}
+
+	void Entity::DrawLines(const std::vector<sf::Vector2i>& waypoints, const sf::Vector2f& player_position, sf::RenderTarget& target) const {
+		for (auto& waypoint : waypoints) {
+			sf::Vertex line[] = {
+				sf::Vertex(player_position),
+				sf::Vertex(sf::Vector2f(waypoint))
+			};
+
+			target.draw(line, 2, sf::Lines);
+		}
+	}
+
+	void Entity::AnimatePlayer() {
+		if (waypoints.size() > 0) {
+			setPosition(float(waypoints[0].x), float(waypoints[0].y));
+		}
 	}
 
 }	// namespace fd

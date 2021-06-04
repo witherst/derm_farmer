@@ -15,6 +15,7 @@ namespace fd {
 		const float GetMovementSpeed() const { return speed_; }
 		void HandleCollisions(TileMap& tmap);
 		void HandleKeyPress(const sf::Keyboard::Key key, const bool is_pressed);
+		void HandleMouseButtonPress(const sf::Mouse::Button button, const bool is_pressed, const sf::RenderWindow& window, const const sf::View& view);
 		void HandleMovement(const sf::Time delta_time, TileMap& tilemap, const sf::View& view);
 		void SetMovementSpeed(const float distance);
 		void SetTexture(sf::Texture& texture);	
@@ -34,6 +35,11 @@ namespace fd {
 		sf::Sprite sprite_;
 		sf::Texture texture_;
 		sf::Vector2f player_last_good_pos_ = {};
+		
+		// TODO: Probably remove the stuff below into its own class.
+		std::vector<sf::Vector2i> waypoints{ 1 };
+		void DrawLines(const std::vector<sf::Vector2i>& waypoints, const sf::Vector2f& player_position, sf::RenderTarget& target) const;
+		void AnimatePlayer();
 	};
 
 }	// namespace fd
