@@ -42,6 +42,9 @@
     <ClInclude Include="third_party\collisions\collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\utility\vector2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\game.cpp">
@@ -66,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="third_party\collisions\collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utility\vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

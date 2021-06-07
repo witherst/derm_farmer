@@ -1,4 +1,5 @@
 #include "headers/entity.h"
+#include "headers/utility/vector2.h"
 #include <iostream>
 
 namespace fd {
@@ -27,13 +28,18 @@ namespace fd {
 		}
 	}
 
-	void Entity::HandleMouseButtonPress(const sf::Mouse::Button button, const bool is_pressed, const sf::RenderWindow& window, const sf::View& view) {
+	void Entity::HandleMouseButtonRelease(const sf::Mouse::Button button, const bool is_pressed, const sf::RenderWindow& window, const sf::View& view) {
 		if (button == sf::Mouse::Button::Right) {
 			// If the view is not centered (i.e., if the view has been scrolled right or down), we have to offset the waypoint
 			// by the amount that has been scrolled.
 			int x_offset = view.getCenter().x - (view.getSize().x / 2);
 			int y_offset = view.getCenter().y - (view.getSize().y / 2);
-			waypoints[0] = { sf::Mouse::getPosition(window).x + x_offset, sf::Mouse::getPosition(window).y + y_offset };
+			if (waypoints_.size() > 0) {
+				waypoints_[0] = { sf::Mouse::getPosition(window).x + x_offset, sf::Mouse::getPosition(window).y + y_offset };
+			}
+			else {
+				waypoints_.push_back({ sf::Mouse::getPosition(window).x + x_offset, sf::Mouse::getPosition(window).y + y_offset });
+			}
 			AnimatePlayer();
 		}
 	}
@@ -88,7 +94,7 @@ namespace fd {
 		setOrigin(sprite_.getLocalBounds().width / 2.f, sprite_.getLocalBounds().height / 2.f);
 		setPosition(view.getSize().x / 2., view.getSize().y / 2.);
 		player_last_good_pos_ = getPosition();
-	}
+	}	
 
 	void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		// Apply the transform.
@@ -99,7 +105,7 @@ namespace fd {
 		
 		// Draw the layers
 		target.draw(sprite_, states);
-		DrawLines(waypoints, getPosition(), target);	
+		DrawLines(waypoints_, getPosition(), target);	
 		
 	}
 
@@ -109,16 +115,33 @@ namespace fd {
 				sf::Vertex(player_position),
 				sf::Vertex(sf::Vector2f(waypoint))
 			};
-
 			target.draw(line, 2, sf::Lines);
 		}
 	}
 
 	void Entity::AnimatePlayer() {
-		if (waypoints.size() > 0) {
-			setPosition(float(waypoints[0].x), float(waypoints[0].y));
+		//if (waypoints_.size() > 0) {
+		//	setPosition(float(waypoints_[0].x), float(waypoints_[0].y));
+		//}
+	}
+
+	void Entity::MoveToWaypoint(const sf::Time delta_time) {
+		if (waypoints_.size() > 0) {
+			VECTOR2 util_player_pos(getPosition().x, getPosition().y);
+			VECTOR2 util_mouse_pos(waypoints_[0].x, waypoints_[0].y);
+			VECTOR2 util_dir = util_mouse_pos - util_player_pos;
+			// util_dir = util_dir.norm();
+			sf::Vector2f dir = util_dir.sf();
+			move(dir * delta_time.asSeconds() * 0.01f);
 		}
 	}
 
+	/*
+		Update will handle everything related to updating the entity
+		on this time step.
+	*/
+	void Entity::Update(const sf::Time delta_time, TileMap& tilemap, const sf::View& view) {
+		MoveToWaypoint(delta_time);
+	}
 }	// namespace fd
 

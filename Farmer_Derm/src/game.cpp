@@ -52,12 +52,12 @@ namespace fd {
 			case sf::Event::KeyReleased:
 				HandlePlayerInput(event.key.code, false);
 				break;
-			case sf::Event::MouseButtonPressed:
-				HandlePlayerInput(event.mouseButton.button, true);
+	//		case sf::Event::MouseButtonPressed:
+	//			HandlePlayerInput(event.mouseButton.button, true);
+	//			break;
+			case sf::Event::MouseButtonReleased:
+				HandlePlayerInput(event.mouseButton.button, false);
 				break;
-		//	case sf::Event::MouseButtonReleased:
-		//		HandlePlayerInput(event.mouseButton.button, false);
-		//		break;
 			case sf::Event::Closed:
 				render_window_.close();
 				return;
@@ -69,8 +69,9 @@ namespace fd {
 	void Game::Update(sf::Time delta_time) {
 		delta_time_ = delta_time;	
 
-		// Update main player's movement.
-		main_player_.HandleMovement(delta_time, tmap_, view_);		
+		// Update main player.
+		main_player_.Update(delta_time, tmap_, view_);
+		main_player_.HandleMovement(delta_time, tmap_, view_);
 
 		// Update view.
 		UpdateView();
@@ -163,7 +164,7 @@ namespace fd {
 	}
 
 	void Game::HandlePlayerInput(sf::Mouse::Button button, bool is_pressed) {
-		main_player_.HandleMouseButtonPress(button, is_pressed, render_window_, view_);
+		main_player_.HandleMouseButtonRelease(button, is_pressed, render_window_, view_);
 	}
 
 } // namespace fd

@@ -58,7 +58,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Tim\OneDrive\Documents\Game Dev\Pixel_Farm_Game\Farmer_Derm\third_party\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -75,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Tim\OneDrive\Documents\Game Dev\Pixel_Farm_Game\Farmer_Derm\third_party\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -97,9 +97,11 @@
     <ClInclude Include="headers\xml_parser.h" />
     <ClInclude Include="headers\tile_map.h" />
     <ClInclude Include="headers\player.h" />
+    <ClInclude Include="headers\utility\vector2.h" />
     <ClInclude Include="third_party\collisions\collision.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\utility\vector2.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\game.cpp" />
